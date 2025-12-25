@@ -21,6 +21,7 @@ EC2 (Ubuntu)
 └── Amazon S3
 
 ```
+![Untitled design](https://github.com/user-attachments/assets/de1a56b8-4780-4223-9f9f-535335c5138f)
 
 ---
 
