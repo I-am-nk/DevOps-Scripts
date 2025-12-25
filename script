@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# -----------------------------
+# VARIABLES
+# -----------------------------
+
+# Folder to backup
+SOURCE_DIR="/home/ubuntu/data"
+
+# S3 bucket name
+S3_BUCKET="s3://ec2-backup-iamnk"
+
+# Current date & time (for versioning)
+DATE=$(date +%Y-%m-%d_%H-%M-%S)
+
+# Backup file name
+BACKUP_FILE="backup-$DATE.tar.gz"
+
+# Temporary location
+TMP_PATH="/tmp/$BACKUP_FILE"
+
+# -----------------------------
+# CREATE COMPRESSED BACKUP
+# -----------------------------
+# tar = archive
+# -c = create
+# -z = gzip
+# -f = file name
+tar -czf $TMP_PATH $SOURCE_DIR
+
+# -----------------------------
+# UPLOAD BACKUP TO S3
+# -----------------------------
+aws s3 cp $TMP_PATH $S3_BUCKET/
+
+# -----------------------------
+# CHECK STATUS
+# -----------------------------
+if aws s3 cp "$TMP_PATH" "$S3_BUCKET/"; then
+    echo "Backup SUCCESS on $DATE"
+else
+    echo "Backup FAILED on $DATE"
+fi
+
+# -----------------------------
+# CLEANUP TEMP FILE
+# -----------------------------
+rm -f $TMP_PATH
